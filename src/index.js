@@ -45,7 +45,12 @@ async function init() {
     setupRoutes();
 
     app.listen(PORT, () => {
-      return console.log(`Server is listening on ${PORT}`);
+      console.log(
+        `\x1b[42m${process.env.PROD}\x1b[0m \x1b[31m${"project stage"}\x1b[0m`
+      );
+      return console.log(
+        `\x1b[42mServer is listening on\x1b[0m  \x1b[31mhttp://localhost:${PORT}\x1b[0m`
+      );
     });
   } catch (error) {
     throw new Error(`Could not init application: ${error}`);
