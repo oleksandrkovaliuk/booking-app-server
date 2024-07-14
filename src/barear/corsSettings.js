@@ -1,3 +1,4 @@
+require("dotenv").config();
 const cors = require("cors");
 
 const defaultCorsSettings = (cors.CorsOptions = {
