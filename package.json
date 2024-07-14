@@ -5,6 +5,7 @@
   "main": "database.js",
   "scripts": {
     "start": "nodemon ./src/index.js",
+    "prod:start": "node ./src/index.js",
     "build": "npm install"
   },
   "keywords": [],
