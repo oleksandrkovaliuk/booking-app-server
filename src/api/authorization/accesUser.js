@@ -1,4 +1,5 @@
 const db = require("../../database");
+const Passwordvalidation = require("../../validation/passwordValidation");
 const checkIfUserExistsQuery = "SELECT * FROM users WHERE email = $1";
 const insertUserQuery =
   "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *;";
@@ -24,6 +25,11 @@ const accessUser = async (req, res) => {
               });
             }
           } else {
+            if (!Passwordvalidation(atob(password)))
+              return res.status(422).json({
+                message:
+                  "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character. Please try again",
+              });
             await db.query(
               insertUserQuery,
               [atob(email), password],
