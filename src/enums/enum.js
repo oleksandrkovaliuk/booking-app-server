@@ -1,0 +1,9 @@
+const AUTH_PROVIDER_GOOGLE = "google";
+const AUTH_PROVIDER_FACEBOOK = "facebook";
+const AUTH_PROVIDER_CREDENTIALS = "credentials";
+
+module.exports = {
+  AUTH_PROVIDER_GOOGLE,
+  AUTH_PROVIDER_FACEBOOK,
+  AUTH_PROVIDER_CREDENTIALS,
+};
