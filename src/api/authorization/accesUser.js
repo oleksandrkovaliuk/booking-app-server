@@ -1,18 +1,19 @@
 const db = require("../../database");
 const Passwordvalidation = require("../../validation/passwordValidation");
-const checkIfUserExistsQuery = "SELECT * FROM users WHERE email = $1";
+const { AUTH_PROVIDER_CREDENTIALS } = require("../../enums/enum");
+
+const checkIfUserExistsQuery = require("../../query/querys");
 const insertUserQuery =
-  "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *;";
+  "INSERT INTO users (email, password , auth_provider) VALUES ($1, $2 , $3) RETURNING *;";
+
 const accessUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log(atob(email), password, "check");
   try {
     if (email && password) {
       await db.query(
         checkIfUserExistsQuery,
         [atob(email)],
         async (dbError, dbResponse) => {
-          console.log("entered into db 1");
           if (!dbError && dbResponse.rows.length > 0) {
             if (atob(dbResponse.rows[0].password) === atob(password)) {
               return res.status(200).json({
@@ -32,7 +33,7 @@ const accessUser = async (req, res) => {
               });
             await db.query(
               insertUserQuery,
-              [atob(email), password],
+              [atob(email), password, AUTH_PROVIDER_CREDENTIALS],
               (dbInsertErr, dbInsertResponse) => {
                 console.log(dbInsertResponse, "entered into db 2");
                 if (!dbInsertErr) {
