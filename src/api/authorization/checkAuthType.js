@@ -1,10 +1,11 @@
 const db = require("../../database");
 
 const { AUTH_PROVIDER_CREDENTIALS } = require("../../enums/enum");
-const checkIfUserExistsQuery = require("../../query/querys");
+const { checkIfUserExistsQuery } = require("../../query/querys");
 
 const checkAuthType = async (req, res) => {
   const { email } = req.body;
+
   try {
     await db.query(
       checkIfUserExistsQuery,
@@ -12,7 +13,7 @@ const checkAuthType = async (req, res) => {
       (dbError, dbResponse) => {
         if (dbError)
           res.status(500).json({ error: "Couldnt authorize user. Try again" });
-        if (dbResponse.rows.length > 0) {
+        if (dbResponse?.rows.length > 0) {
           if (dbResponse.rows[0].auth_provider !== AUTH_PROVIDER_CREDENTIALS)
             res.status(409).json({
               message:
