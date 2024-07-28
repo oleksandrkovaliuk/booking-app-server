@@ -36,15 +36,12 @@ const accessUser = async (req, res) => {
               insertUserQuery,
               [atob(email), password, AUTH_PROVIDER_CREDENTIALS, AUTH_ROLE],
               (dbInsertErr, dbInsertResponse) => {
-                console.log(dbInsertErr, AUTH_ROLE, "entered into db 2");
                 if (!dbInsertErr) {
-                  console.log("user created");
                   return res.status(200).json({
                     status: "authorized",
                     user: dbInsertResponse.rows[0],
                   });
                 } else {
-                  console.log("error created");
                   return res
                     .status(500)
                     .json({ message: "Couldnt create user. Try again" });
