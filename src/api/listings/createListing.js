@@ -53,7 +53,7 @@ const createListing = async (req, res) => {
       guests,
       additionalDetails.pets,
       additionalDetails.accesable,
-      images,
+      JSON.stringify(images),
       title,
       aboutPlace,
       placeIs,
