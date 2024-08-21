@@ -1,4 +1,4 @@
-const db = require("../../database");
+const db = require("../../../config/database");
 const getTypeOfPlaceQuery = "SELECT * FROM type_of_place;";
 
 const getTypeOfPlace = async (req, res) => {

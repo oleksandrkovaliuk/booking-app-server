@@ -1,4 +1,4 @@
-const db = require("../../database");
+const db = require("../../../config/database");
 const deleteListingQuery = "DELETE FROM listings WHERE id = $1";
 
 const deleteListing = (req, res) => {

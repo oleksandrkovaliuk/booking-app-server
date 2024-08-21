@@ -1,5 +1,5 @@
-const db = require("../../database");
-const { getListingCategoriesQuery } = require("../../query/querys");
+const db = require("../../../config/database");
+const { getListingCategoriesQuery } = require("../../../query/querys");
 
 const getListingCategories = async (req, res) => {
   try {

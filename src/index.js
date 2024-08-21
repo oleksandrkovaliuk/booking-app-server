@@ -8,7 +8,7 @@ const cors = require("cors");
 
 const mainRouters = require("./routes/mainRoutes");
 const defaultCorsSettings = require("./barear/corsSettings");
-const dbClientConnection = require("./database");
+const dbClientConnection = require("./config/database");
 
 const app = express();
 const PORT = process.env.PORT;
