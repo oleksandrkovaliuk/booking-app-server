@@ -1,4 +1,4 @@
-const db = require("../../database");
+const db = require("../../config/database");
 
 const { AUTH_PROVIDER_CREDENTIALS } = require("../../enums/enum");
 const { checkIfUserExistsQuery } = require("../../query/querys");

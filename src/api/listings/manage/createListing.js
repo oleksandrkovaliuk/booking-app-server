@@ -1,42 +1,59 @@
-const db = require("../../database");
+const db = require("../../../config/database");
 const createListingQuery =
-  "INSERT INTO listings ( hostname, hostemail , category, type, cordinates, address, guests, pets_allowed , accesable, images, title, aboutplace, placeis, notes, price) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 , $13 , $14, $15) RETURNING *";
+  "INSERT INTO listings ( hostname, hostemail , category, type, cordinates, address, guests, pets_allowed , accesable, images, title, aboutplace, placeis, notes, price ,iscomplete ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 , $13 , $14, $15 , $16) RETURNING *";
 
 const createListing = async (req, res) => {
   const {
     hostname,
     hostemail,
     category,
-    typeOfPlace,
+    type,
     cordinates,
     address,
     guests,
-    additionalDetails,
+    pets_allowed,
+    accesable,
     images,
     title,
-    aboutPlace,
-    placeIs,
+    aboutplace,
+    placeis,
     notes,
     price,
   } = req.body;
 
-  const isNotDataValid =
+  console.log(
+    hostname,
+    hostemail,
+    category,
+    type,
+    cordinates,
+    address,
+    guests,
+    pets_allowed,
+    accesable,
+    images,
+    title,
+    aboutplace,
+    placeis,
+    notes,
+    price
+  );
+  const isValidData =
     !hostname ||
     !hostemail ||
     !category ||
-    !typeOfPlace ||
+    !type ||
     !cordinates ||
     !address ||
     !guests ||
-    !additionalDetails ||
     !images ||
     !title ||
-    !aboutPlace ||
-    !placeIs ||
+    !aboutplace ||
+    !placeis ||
     !notes ||
     !price;
 
-  if (isNotDataValid)
+  if (isValidData)
     res.status(400).json({
       message:
         "Invalid data provided. Please make sure all fields are filled correctly",
@@ -47,18 +64,19 @@ const createListing = async (req, res) => {
       hostname,
       hostemail,
       category,
-      typeOfPlace,
+      type,
       cordinates,
       address,
       guests,
-      additionalDetails.pets,
-      additionalDetails.accesable,
+      pets_allowed,
+      accesable,
       JSON.stringify(images),
       title,
-      aboutPlace,
-      placeIs,
+      aboutplace,
+      placeis,
       notes,
       parseInt(price.replace(/,/g, ""), 10),
+      false,
     ]);
     return res.status(200).json({ message: "Listing created successfully" });
   } catch (error) {
