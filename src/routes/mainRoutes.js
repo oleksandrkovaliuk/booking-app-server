@@ -9,12 +9,17 @@ const checkAuthType = require("../api/authorization/checkAuthType");
 const getListings = require("../api/listings/info/getListings");
 const getListingCategories = require("../api/listings/info/getListingsCategories");
 const getTypeOfPlace = require("../api/listings/info/getTypeOfPlace");
+
 const createListing = require("../api/listings/manage/createListing");
 const deleteListing = require("../api/listings/manage/deleteListing");
+
 const deleteIndividualListingImage = require("../api/listings/images/deleteIndividualImages");
 const deleteListingImages = require("../api/listings/images/deleteImages");
 const uploadUserListingImages = require("../api/listings/images/uploadingImages");
+
 const setDisabledDates = require("../api/listings/calendar/setDisabledDates");
+
+const updateListing = require("../api/listings/update/updateListing");
 
 // AUTH
 router.route("/auth/accessUser").post(accessUser);
@@ -39,5 +44,8 @@ router
 
 // CALENDAR
 router.route("/listings/calendar/confirm").post(setDisabledDates);
+
+// UPDATE LISTING
+router.route("/listings/update").post(updateListing);
 
 module.exports = router;
