@@ -20,11 +20,15 @@ const uploadUserListingImages = require("../api/listings/images/uploadingImages"
 const setDisabledDates = require("../api/listings/calendar/setDisabledDates");
 
 const updateListing = require("../api/listings/update/updateListing");
+const getUser = require("../api/user/getUser");
 
 // AUTH
 router.route("/auth/accessUser").post(accessUser);
 router.route("/auth/oauthUser").post(insertOAuthUser);
 router.route("/auth/checkAuthType").post(checkAuthType);
+
+// USER
+router.route("/user/get/:user_email/:user_name").get(getUser);
 
 // LISTINGS
 router.route("/listings/listings").get(getListings);
