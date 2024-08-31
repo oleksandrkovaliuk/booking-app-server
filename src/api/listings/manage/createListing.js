@@ -1,11 +1,11 @@
 const db = require("../../../config/database");
 const createListingQuery =
-  "INSERT INTO listings ( hostname, hostemail , category, type, cordinates, address, guests, pets_allowed , accesable, images, title, aboutplace, placeis, notes, price ,iscomplete ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 , $13 , $14, $15 , $16) RETURNING *";
+  "INSERT INTO listings ( host_id ,host_name, host_email , category, type, cordinates, address, guests, pets_allowed , accesable, images, title, aboutplace, placeis, notes, price ,iscomplete ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12 , $13 , $14, $15 , $16 , $17) RETURNING *";
 
 const createListing = async (req, res) => {
   const {
-    hostname,
-    hostemail,
+    host_name,
+    host_email,
     category,
     type,
     cordinates,
@@ -21,26 +21,15 @@ const createListing = async (req, res) => {
     price,
   } = req.body;
 
-  console.log(
-    hostname,
-    hostemail,
-    category,
-    type,
-    cordinates,
-    address,
-    guests,
-    pets_allowed,
-    accesable,
-    images,
-    title,
-    aboutplace,
-    placeis,
-    notes,
-    price
+  const { rows } = await db.query(
+    "SELECT * FROM users WHERE email = $1 OR user_name = $2",
+    [host_email, host_name]
   );
+
   const isValidData =
-    !hostname ||
-    !hostemail ||
+    !rows[0] ||
+    !host_name ||
+    !host_email ||
     !category ||
     !type ||
     !cordinates ||
@@ -61,8 +50,9 @@ const createListing = async (req, res) => {
 
   try {
     await db.query(createListingQuery, [
-      hostname,
-      hostemail,
+      rows[0].id,
+      host_name,
+      host_email,
       category,
       type,
       cordinates,
