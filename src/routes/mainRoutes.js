@@ -9,6 +9,8 @@ const checkAuthType = require("../api/authorization/checkAuthType");
 const getListings = require("../api/listings/info/getListings");
 const getListingCategories = require("../api/listings/info/getListingsCategories");
 const getTypeOfPlace = require("../api/listings/info/getTypeOfPlace");
+const getUserListings = require("../api/listings/info/getUserListings");
+const getCurrentListing = require("../api/listings/info/getCurrentListing");
 
 const createListing = require("../api/listings/manage/createListing");
 const deleteListing = require("../api/listings/manage/deleteListing");
@@ -32,6 +34,8 @@ router.route("/user/get/:user_email/:user_name").get(getUser);
 
 // LISTINGS
 router.route("/listings/listings").get(getListings);
+router.route("/listings/listings/:user_name/:user_email").get(getUserListings);
+router.route("/listings/get/current/:id/:user_name").get(getCurrentListing);
 router.route("/listings/categories").get(getListingCategories);
 router.route("/listings/typeofplace").get(getTypeOfPlace);
 router.route("/listings/createListing").post(createListing);
