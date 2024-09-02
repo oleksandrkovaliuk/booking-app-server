@@ -8,6 +8,8 @@ const insertUserQuery =
 
 const accessUser = async (req, res) => {
   const { email, password } = req.body;
+  const { jti } = req.headers.authorization.split("")[1];
+  console.log(jti, "jti");
 
   try {
     if (email && password) {

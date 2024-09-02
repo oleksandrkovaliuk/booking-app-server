@@ -7,7 +7,7 @@ const getUserListings = async (req, res) => {
       "SELECT * FROM listings WHERE host_name = $1 OR host_email = $2",
       [user_name, user_email]
     );
-    return res.status(200).json({ data: dbResponse?.rows });
+    return res.status(200).json(dbResponse?.rows);
   } catch (error) {
     return res.status(500).json({
       message: `Could not get listings. Please try again.`,

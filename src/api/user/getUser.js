@@ -4,14 +4,14 @@ const getUser = async (req, res) => {
   const { user_name, user_email } = req.params;
 
   try {
-    if (!user_name && !user_email)
+    if (!user_email && !user_name)
       return res.status(400).json({
         message: "Couldnt determine user name and email",
       });
 
     const { rows } = await db.query(
-      "SELECT * FROM users WHERE user_name = $1 OR email = $2",
-      [user_name, user_email]
+      "SELECT * FROM users WHERE email = $1 OR user_name = $2",
+      [user_email, user_name]
     );
 
     if (!rows[0])
@@ -28,6 +28,7 @@ const getUser = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       message: "Internal server error",
     });

@@ -7,7 +7,8 @@ const insertOAuthUserQuery =
 
 const insertOAuthUser = async (req, res) => {
   const { email, user_name, user_lastname, img_url, provider } = req.body;
-
+  const headers = req.headers;
+  console.log(headers, "jti");
   try {
     if (email) {
       await db.query(

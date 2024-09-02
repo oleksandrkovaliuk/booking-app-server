@@ -7,6 +7,8 @@ const insertOAuthUser = require("../api/authorization/insertOAuthUser");
 const checkAuthType = require("../api/authorization/checkAuthType");
 
 const getListings = require("../api/listings/info/getListings");
+const getVerifiedListings = require("../api/listings/info/getVerifiedListings");
+
 const getListingCategories = require("../api/listings/info/getListingsCategories");
 const getTypeOfPlace = require("../api/listings/info/getTypeOfPlace");
 const getUserListings = require("../api/listings/info/getUserListings");
@@ -33,11 +35,14 @@ router.route("/auth/checkAuthType").post(checkAuthType);
 router.route("/user/get/:user_email/:user_name").get(getUser);
 
 // LISTINGS
+router.route("/listings/verified").get(getVerifiedListings);
 router.route("/listings/listings").get(getListings);
-router.route("/listings/listings/:user_name/:user_email").get(getUserListings);
-router.route("/listings/get/current/:id/:user_name").get(getCurrentListing);
-router.route("/listings/categories").get(getListingCategories);
 router.route("/listings/typeofplace").get(getTypeOfPlace);
+router.route("/listings/categories").get(getListingCategories);
+
+router.route("/listings/get/user/:user_name/:user_email").get(getUserListings);
+router.route("/listings/get/current/:id").get(getCurrentListing);
+
 router.route("/listings/createListing").post(createListing);
 router.route("/listings/deleteListing").post(deleteListing);
 
