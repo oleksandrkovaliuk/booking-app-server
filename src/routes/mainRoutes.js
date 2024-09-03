@@ -43,8 +43,8 @@ router.route("/listings/categories").get(getListingCategories);
 router.route("/listings/get/user/:user_name/:user_email").get(getUserListings);
 router.route("/listings/get/current/:id").get(getCurrentListing);
 
-router.route("/listings/createListing").post(createListing);
-router.route("/listings/deleteListing").post(deleteListing);
+router.route("/listings/listing/create").post(createListing);
+router.route("/listings/listing/delete").post(deleteListing);
 
 // IMAGES
 router
