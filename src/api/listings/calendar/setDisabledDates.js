@@ -3,7 +3,7 @@ const updatedDisabledDatesQuery =
   "UPDATE listings SET disabled_dates = $1 , iscomplete = $2 WHERE id = $3";
 const setDisabledDates = async (req, res) => {
   const { disabledDates, id } = req.body;
-  console.log(disabledDates);
+
   const isValidData = !disabledDates || !id;
   if (isValidData) {
     return res

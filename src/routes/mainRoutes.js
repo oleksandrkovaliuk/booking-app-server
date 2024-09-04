@@ -52,13 +52,13 @@ router
   .post(multer.array("files"), uploadUserListingImages);
 router.route("/listings/images/delete").post(deleteListingImages);
 router
-  .route("/listings/images/deleteIndividual")
+  .route("/listings/images/delete/individual")
   .post(deleteIndividualListingImage);
 
 // CALENDAR
-router.route("/listings/calendar/confirm").post(setDisabledDates);
+router.route("/listings/calendar/update").post(setDisabledDates);
 
 // UPDATE LISTING
-router.route("/listings/update").post(updateListing);
+router.route("/listings/request/update").post(updateListing);
 
 module.exports = router;

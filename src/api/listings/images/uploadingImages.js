@@ -4,7 +4,6 @@ const uploadUserListingImages = async (req, res) => {
   const files = req.files;
   const { user_email, location } = req.body;
 
-  console.log(user_email, location, files, "data");
   try {
     if (!files || !user_email || !location) {
       throw new Error("Some details are missing. Please try again");
