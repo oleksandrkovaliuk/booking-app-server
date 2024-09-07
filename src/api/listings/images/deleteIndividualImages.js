@@ -20,7 +20,7 @@ const deleteIndividualListingImage = async (req, res) => {
         remainingUrls.push({ url: url });
       }
     }
-    return res.status(200).json({ data: remainingUrls });
+    return res.status(200).json(remainingUrls);
   } catch (error) {
     return res.status(500).json({
       error: error.message || "Something went wrong. Please try again",

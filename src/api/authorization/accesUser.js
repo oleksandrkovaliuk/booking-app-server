@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const db = require("../../config/database");
 const Passwordvalidation = require("../../validation/passwordValidation");
 const { AUTH_PROVIDER_CREDENTIALS, AUTH_ROLE } = require("../../enums/enum");
@@ -17,7 +18,13 @@ const accessUser = async (req, res) => {
         async (dbError, dbResponse) => {
           if (!dbError && dbResponse.rows.length > 0) {
             if (atob(dbResponse.rows[0].password) === atob(password)) {
+              const token = jwt.sign(
+                dbResponse.rows[0],
+                process.env.JSON_SECRET
+              );
+
               return res.status(200).json({
+                jwt: token,
                 status: "authorized",
                 user: dbResponse.rows[0],
               });
@@ -36,8 +43,14 @@ const accessUser = async (req, res) => {
               insertUserQuery,
               [atob(email), password, AUTH_PROVIDER_CREDENTIALS, AUTH_ROLE],
               (dbInsertErr, dbInsertResponse) => {
+                const token = jwt.sign(
+                  dbInsertResponse.rows[0],
+                  process.env.JSON_SECRET
+                );
+
                 if (!dbInsertErr) {
                   return res.status(200).json({
+                    jwt: token,
                     status: "authorized",
                     user: dbInsertResponse.rows[0],
                   });

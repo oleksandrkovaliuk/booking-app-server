@@ -1,9 +1,9 @@
 const db = require("../../../config/database");
 
-const getListings = async (req, res) => {
+const getListings = async (_, res) => {
   try {
     const dbResponse = await db.query("SELECT * FROM listings");
-    return res.status(200).json({ data: dbResponse?.rows });
+    return res.status(200).json(dbResponse?.rows);
   } catch (error) {
     return res
       .status(500)

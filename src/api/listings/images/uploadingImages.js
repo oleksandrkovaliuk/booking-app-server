@@ -34,7 +34,7 @@ const uploadUserListingImages = async (req, res) => {
           return { url: url };
         })
       );
-      return res.status(200).json({ data: fileUrls });
+      return res.status(200).json(fileUrls);
     }
   } catch (error) {
     return res.status(500).json({
