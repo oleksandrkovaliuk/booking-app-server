@@ -2,66 +2,55 @@ const jwt = require("jsonwebtoken");
 
 const db = require("../../config/database");
 const { AUTH_ROLE } = require("../../enums/enum");
-const { checkIfUserExistsQuery } = require("../../query/querys");
-
-const insertOAuthUserQuery =
-  "INSERT INTO users (email , user_name , user_lastname , img_url , auth_provider , role) VALUES ($1 , COALESCE($2, ''), COALESCE($3, ''), COALESCE($4, '') , $5 , $6) RETURNING *;";
+const {
+  checkIfUserExistsQuery,
+  insertOAuthUserQuery,
+  updateJWTQuery,
+} = require("../../query/querys");
 
 const insertOAuthUser = async (req, res) => {
   const { email, user_name, user_lastname, img_url, provider } = req.body;
-  const headers = req.headers;
 
   try {
     if (email) {
-      await db.query(
-        checkIfUserExistsQuery,
-        [email],
-        async (dbError, dbResponse) => {
-          if (!dbError && dbResponse.rows.length > 0) {
-            if (dbResponse.rows[0].auth_provider === provider) {
-              const token = jwt.sign(
-                dbResponse.rows[0],
-                process.env.JSON_SECRET
-              );
+      const existingUser = await db.query(checkIfUserExistsQuery, [email]);
 
-              return res.status(200).json({
-                jwt: token,
-                status: "authorized",
-                role: dbResponse.rows[0].role,
-              });
-            } else {
-              return res.status(409).json({
-                message:
-                  "User with this email is already registered via other platform. Please log in through those services.",
-              });
-            }
-          } else {
-            await db.query(
-              insertOAuthUserQuery,
-              [email, user_name, user_lastname, img_url, provider, AUTH_ROLE],
-              (dbError, dbResponse) => {
-                const token = jwt.sign(
-                  dbResponse.rows[0],
-                  process.env.JSON_SECRET
-                );
-
-                if (!dbError)
-                  res.status(200).json({
-                    jwt: token,
-                    status: "authorized",
-                    role: dbResponse.rows[0].role,
-                  });
-                else
-                  res.status(500).json({
-                    message: "Couldnt authroize user . Please try again",
-                  });
-              }
-            );
-          }
+      if (existingUser.rows.length > 0) {
+        if (existingUser.rows[0].auth_provider === provider) {
+          const token = jwt.sign(existingUser.rows[0], process.env.JSON_SECRET);
+          return res.status(200).json({
+            status: "authorized",
+            user: { ...existingUser.rows[0], jwt: token },
+          });
+        } else {
+          return res.status(409).json({
+            message:
+              "User with this email is already registered via other platform. Please log in through those services.",
+          });
         }
-      );
+      } else {
+        const insertUser = await db.query(insertOAuthUserQuery, [
+          email,
+          user_name,
+          user_lastname,
+          img_url,
+          provider,
+          AUTH_ROLE,
+        ]);
+
+        if (!insertUser.rows[0]) throw new Error("Something went wrong");
+        const token = jwt.sign(insertUser.rows[0], process.env.JSON_SECRET);
+
+        return res.status(200).json({
+          status: "authorized",
+          user: { ...insertUser.rows[0], jwt: token },
+        });
+      }
+    } else {
+      throw Error("Failed with validate email or password");
     }
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ error: error.message || "Couldnt authorize user. Try again" });

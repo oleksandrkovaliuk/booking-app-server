@@ -26,13 +26,16 @@ const setDisabledDates = require("../api/listings/calendar/setDisabledDates");
 const updateListing = require("../api/listings/update/updateListing");
 const getUser = require("../api/user/getUser");
 
+// MIDDLEWARE
+const verificateToken = require("../middlewares/AuthenticateBarear");
+
 // AUTH
 router.route("/auth/accessUser").post(accessUser);
 router.route("/auth/oauthUser").post(insertOAuthUser);
 router.route("/auth/checkAuthType").post(checkAuthType);
 
 // USER
-router.route("/user/get/:user_email/:user_name").get(getUser);
+router.route("/user/get/:user_email/:user_name").get(verificateToken, getUser);
 
 // LISTINGS
 router.route("/listings/verified").get(getVerifiedListings);
@@ -40,25 +43,29 @@ router.route("/listings/listings").get(getListings);
 router.route("/listings/typeofplace").get(getTypeOfPlace);
 router.route("/listings/categories").get(getListingCategories);
 
-router.route("/listings/get/user/:user_name/:user_email").get(getUserListings);
+router.route("/listings/get/users").get(verificateToken, getUserListings);
 router.route("/listings/get/current/:id").get(getCurrentListing);
 
-router.route("/listings/listing/create").post(createListing);
-router.route("/listings/listing/delete").post(deleteListing);
+router.route("/listings/listing/create").post(verificateToken, createListing);
+router.route("/listings/listing/delete").post(verificateToken, deleteListing);
 
 // IMAGES
 router
   .route("/listings/images/upload")
-  .post(multer.array("files"), uploadUserListingImages);
-router.route("/listings/images/delete").post(deleteListingImages);
+  .post(multer.array("files"), verificateToken, uploadUserListingImages);
+router
+  .route("/listings/images/delete")
+  .post(verificateToken, deleteListingImages);
 router
   .route("/listings/images/delete/individual")
-  .post(deleteIndividualListingImage);
+  .post(verificateToken, deleteIndividualListingImage);
 
 // CALENDAR
-router.route("/listings/calendar/update").post(setDisabledDates);
+router
+  .route("/listings/calendar/update")
+  .post(verificateToken, setDisabledDates);
 
 // UPDATE LISTING
-router.route("/listings/request/update").post(updateListing);
+router.route("/listings/request/update").post(verificateToken, updateListing);
 
 module.exports = router;
