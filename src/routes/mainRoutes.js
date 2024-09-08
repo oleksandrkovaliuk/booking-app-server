@@ -23,6 +23,8 @@ const uploadUserListingImages = require("../api/listings/images/uploadingImages"
 
 const setDisabledDates = require("../api/listings/calendar/setDisabledDates");
 
+const requestListingBySearchReq = require("../api/listings/searchFilters/requestListingBySearchReq");
+
 const updateListing = require("../api/listings/update/updateListing");
 const getUser = require("../api/user/getUser");
 
@@ -48,6 +50,8 @@ router.route("/listings/get/current/:id").get(getCurrentListing);
 
 router.route("/listings/listing/create").post(verificateToken, createListing);
 router.route("/listings/listing/delete").post(verificateToken, deleteListing);
+
+router.route("/listings/request/search").post(requestListingBySearchReq);
 
 // IMAGES
 router
