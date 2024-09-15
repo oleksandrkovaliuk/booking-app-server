@@ -10,6 +10,7 @@ const getListings = require("../api/listings/info/getListings");
 const getVerifiedListings = require("../api/listings/info/getVerifiedListings");
 
 const getListingCategories = require("../api/listings/info/getListingsCategories");
+const getAvailableCategories = require("../api/listings/info/getAvailableCategories");
 const getTypeOfPlace = require("../api/listings/info/getTypeOfPlace");
 const getUserListings = require("../api/listings/info/getUserListings");
 const getCurrentListing = require("../api/listings/info/getCurrentListing");
@@ -26,6 +27,9 @@ const setDisabledDates = require("../api/listings/calendar/setDisabledDates");
 const requestListingBySearchReq = require("../api/listings/searchFilters/requestListingBySearchReq");
 
 const updateListing = require("../api/listings/update/updateListing");
+const updateExitistingListings = require("../api/listings/update/updateExistingListings");
+
+// USER
 const getUser = require("../api/user/getUser");
 
 // MIDDLEWARE
@@ -43,7 +47,11 @@ router.route("/user/get/:user_email/:user_name").get(verificateToken, getUser);
 router.route("/listings/verified").get(getVerifiedListings);
 router.route("/listings/listings").get(getListings);
 router.route("/listings/typeofplace").get(getTypeOfPlace);
+
 router.route("/listings/categories").get(getListingCategories);
+router
+  .route("/listings/request/available/categories")
+  .post(getAvailableCategories);
 
 router.route("/listings/get/users").get(verificateToken, getUserListings);
 router.route("/listings/get/current/:id").get(getCurrentListing);
@@ -70,6 +78,9 @@ router
   .post(verificateToken, setDisabledDates);
 
 // UPDATE LISTING
+router
+  .route("/listings/request/update/existing")
+  .post(updateExitistingListings);
 router.route("/listings/request/update").post(verificateToken, updateListing);
 
 module.exports = router;
