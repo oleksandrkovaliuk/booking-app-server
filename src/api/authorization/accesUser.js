@@ -1,11 +1,9 @@
 const jwt = require("jsonwebtoken");
 const db = require("../../config/database");
-const Passwordvalidation = require("../../validation/passwordValidation");
 const { AUTH_PROVIDER_CREDENTIALS, AUTH_ROLE } = require("../../enums/enum");
 const {
   checkIfUserExistsQuery,
   insertUserQuery,
-  updateJWTQuery,
 } = require("../../query/querys");
 
 const accessUser = async (req, res) => {

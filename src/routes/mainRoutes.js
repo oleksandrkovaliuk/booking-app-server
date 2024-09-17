@@ -27,7 +27,6 @@ const setDisabledDates = require("../api/listings/calendar/setDisabledDates");
 const requestListingBySearchReq = require("../api/listings/searchFilters/requestListingBySearchReq");
 
 const updateListing = require("../api/listings/update/updateListing");
-const updateExitistingListings = require("../api/listings/update/updateExistingListings");
 
 // USER
 const getUser = require("../api/user/getUser");
@@ -41,11 +40,12 @@ router.route("/auth/oauthUser").post(insertOAuthUser);
 router.route("/auth/checkAuthType").post(checkAuthType);
 
 // USER
-router.route("/user/get/:user_email/:user_name").get(verificateToken, getUser);
+router.route("/user/get/:user_email/:user_name").get(getUser);
 
 // LISTINGS
-router.route("/listings/verified").get(getVerifiedListings);
 router.route("/listings/listings").get(getListings);
+router.route("/listings/verified/by/params").get(getVerifiedListings);
+
 router.route("/listings/typeofplace").get(getTypeOfPlace);
 
 router.route("/listings/categories").get(getListingCategories);
@@ -60,6 +60,10 @@ router.route("/listings/listing/create").post(verificateToken, createListing);
 router.route("/listings/listing/delete").post(verificateToken, deleteListing);
 
 router.route("/listings/request/search").post(requestListingBySearchReq);
+
+// UPDATE LISTING
+
+router.route("/listings/request/update").post(verificateToken, updateListing);
 
 // IMAGES
 router
@@ -76,11 +80,5 @@ router
 router
   .route("/listings/calendar/update")
   .post(verificateToken, setDisabledDates);
-
-// UPDATE LISTING
-router
-  .route("/listings/request/update/existing")
-  .post(updateExitistingListings);
-router.route("/listings/request/update").post(verificateToken, updateListing);
 
 module.exports = router;
