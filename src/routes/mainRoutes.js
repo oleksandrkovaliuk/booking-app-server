@@ -13,6 +13,7 @@ const getListings = require("../api/listings/info/getListings");
 const getVerifiedListings = require("../api/listings/info/getVerifiedListings");
 
 const getListingCategories = require("../api/listings/info/getListingsCategories");
+const getFullCategoriesList = require("../api/listings/info/getFullCategoriesList");
 const getAvailableCategories = require("../api/listings/info/getAvailableCategories");
 const getTypeOfPlace = require("../api/listings/info/getTypeOfPlace");
 const getUserListings = require("../api/listings/info/getUserListings");
@@ -58,6 +59,7 @@ router.route("/listings/verified/by/params").get(getVerifiedListings);
 router.route("/listings/typeofplace").get(getTypeOfPlace);
 
 router.route("/listings/categories").get(getListingCategories);
+router.route("/listings/categories/all").get(getFullCategoriesList);
 router
   .route("/listings/request/available/categories")
   .post(getAvailableCategories);

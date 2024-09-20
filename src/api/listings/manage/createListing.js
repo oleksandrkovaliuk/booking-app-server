@@ -28,7 +28,6 @@ const createListing = async (req, res) => {
 
   const isValidData =
     !rows[0] ||
-    !host_name ||
     !host_email ||
     !category ||
     !type ||
@@ -43,7 +42,7 @@ const createListing = async (req, res) => {
     !price;
 
   if (isValidData)
-    res.status(400).json({
+    return res.status(400).json({
       message:
         "Invalid data provided. Please make sure all fields are filled correctly",
     });
