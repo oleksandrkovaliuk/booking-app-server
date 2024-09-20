@@ -35,9 +35,12 @@ const matchesSearchFilters = (
     search_date &&
     listing.disabled_dates.some(
       (date) =>
-        search_date.start.day === date.day &&
+        search_date.start.day <= date.day &&
+        search_date.end.day >= date.day &&
         search_date.start.month === date.month &&
-        search_date.start.year === date.year
+        search_date.end.month === date.month &&
+        search_date.start.year === date.year &&
+        search_date.end.year === date.year
     )
   ) {
     return false;

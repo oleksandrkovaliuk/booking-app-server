@@ -6,6 +6,9 @@ const accessUser = require("../api/authorization/accesUser");
 const insertOAuthUser = require("../api/authorization/insertOAuthUser");
 const checkAuthType = require("../api/authorization/checkAuthType");
 
+const getUserSearchRegionHistory = require("../api/user/getUserSearchRegionHistory");
+const updateUserSearchRegionHistory = require("../api/user/updateUserSearchRegionHistory");
+
 const getListings = require("../api/listings/info/getListings");
 const getVerifiedListings = require("../api/listings/info/getVerifiedListings");
 
@@ -41,6 +44,12 @@ router.route("/auth/checkAuthType").post(checkAuthType);
 
 // USER
 router.route("/user/get/:user_email/:user_name").get(getUser);
+router
+  .route("/user/update/search/region/history")
+  .post(verificateToken, updateUserSearchRegionHistory);
+router
+  .route("/user/get/search/region/history")
+  .get(verificateToken, getUserSearchRegionHistory);
 
 // LISTINGS
 router.route("/listings/listings").get(getListings);
