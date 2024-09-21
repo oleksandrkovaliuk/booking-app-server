@@ -1,69 +1,49 @@
 const jwt = require("jsonwebtoken");
 const db = require("../../config/database");
-const Passwordvalidation = require("../../validation/passwordValidation");
 const { AUTH_PROVIDER_CREDENTIALS, AUTH_ROLE } = require("../../enums/enum");
-const { checkIfUserExistsQuery } = require("../../query/querys");
-
-const insertUserQuery =
-  "INSERT INTO users (email, password , auth_provider , role) VALUES ($1, $2 , $3 ,$4) RETURNING *;";
+const {
+  checkIfUserExistsQuery,
+  insertUserQuery,
+} = require("../../query/querys");
 
 const accessUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     if (email && password) {
-      await db.query(
-        checkIfUserExistsQuery,
-        [atob(email)],
-        async (dbError, dbResponse) => {
-          if (!dbError && dbResponse.rows.length > 0) {
-            if (atob(dbResponse.rows[0].password) === atob(password)) {
-              const token = jwt.sign(
-                dbResponse.rows[0],
-                process.env.JSON_SECRET
-              );
+      const existingUser = await db.query(checkIfUserExistsQuery, [
+        atob(email),
+      ]);
 
-              return res.status(200).json({
-                jwt: token,
-                status: "authorized",
-                user: dbResponse.rows[0],
-              });
-            } else {
-              return res.status(401).json({
-                message: "Your password is incorrect. Please try again",
-              });
-            }
-          } else {
-            if (!Passwordvalidation(atob(password)))
-              return res.status(422).json({
-                message:
-                  "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character. Please try again",
-              });
-            await db.query(
-              insertUserQuery,
-              [atob(email), password, AUTH_PROVIDER_CREDENTIALS, AUTH_ROLE],
-              (dbInsertErr, dbInsertResponse) => {
-                const token = jwt.sign(
-                  dbInsertResponse.rows[0],
-                  process.env.JSON_SECRET
-                );
+      if (existingUser.rows.length > 0) {
+        if (atob(existingUser.rows[0].password) === atob(password)) {
+          const token = jwt.sign(existingUser.rows[0], process.env.JSON_SECRET);
 
-                if (!dbInsertErr) {
-                  return res.status(200).json({
-                    jwt: token,
-                    status: "authorized",
-                    user: dbInsertResponse.rows[0],
-                  });
-                } else {
-                  return res
-                    .status(500)
-                    .json({ message: "Couldnt create user. Try again" });
-                }
-              }
-            );
-          }
+          return res.status(200).json({
+            status: "authorized",
+            user: { ...existingUser.rows[0], jwt: token },
+          });
+        } else {
+          return res.status(401).json({
+            message: "Your password is incorrect. Please try again",
+          });
         }
-      );
+      } else {
+        const insertedUser = await db.query(insertUserQuery, [
+          atob(email),
+          password,
+          AUTH_PROVIDER_CREDENTIALS,
+          AUTH_ROLE,
+        ]);
+
+        if (!insertedUser.rows[0]) throw new Error("Something went wrong");
+        const token = jwt.sign(insertedUser.rows[0], process.env.JSON_SECRET);
+
+        return res.status(200).json({
+          status: "authorized",
+          user: { ...insertedUser.rows[0], jwt: token },
+        });
+      }
     } else {
       throw Error("Failed with validate email or password");
     }
