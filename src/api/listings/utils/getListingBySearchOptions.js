@@ -33,15 +33,25 @@ const matchesSearchFilters = (
 
   if (
     search_date &&
-    listing.disabled_dates.some(
-      (date) =>
-        search_date.start.day <= date.day &&
-        search_date.end.day >= date.day &&
-        search_date.start.month === date.month &&
-        search_date.end.month === date.month &&
-        search_date.start.year === date.year &&
-        search_date.end.year === date.year
-    )
+    listing.disabled_dates.some((disabledDate) => {
+      const disabled = new Date(
+        disabledDate.year,
+        disabledDate.month - 1,
+        disabledDate.day
+      );
+      const start = new Date(
+        search_date.start.year,
+        search_date.start.month - 1,
+        search_date.start.day
+      );
+      const end = new Date(
+        search_date.end.year,
+        search_date.end.month - 1,
+        search_date.end.day
+      );
+
+      return disabled >= start && disabled <= end;
+    })
   ) {
     return false;
   }

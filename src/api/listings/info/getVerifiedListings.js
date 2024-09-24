@@ -36,28 +36,28 @@ const getVerifiedListings = async (req, res) => {
       if (!search_result.length) return res.status(200).json(rows);
 
       if (
-        parsedParams.search_accesable ||
-        parsedParams.search_price_range ||
-        parsedParams.search_shared_room ||
         parsedParams.search_category_id ||
-        parsedParams.search_type_of_place
+        parsedParams.filter_accesable ||
+        parsedParams.filter_price_range ||
+        parsedParams.filter_shared_room ||
+        parsedParams.filter_type_of_place
       ) {
         const filteredListings = GetFilteredListings({
           search_result: search_result,
           accesable: parsedParams.search_accesable
             ? JSON.parse(parsedParams.search_accesable)
             : null,
-          price_range: parsedParams.search_price_range
-            ? JSON.parse(parsedParams.search_price_range)
+          price_range: parsedParams.filter_price_range
+            ? JSON.parse(parsedParams.filter_price_range)
             : null,
-          shared_room: parsedParams.search_shared_room
-            ? JSON.parse(parsedParams.search_shared_room)
+          shared_room: parsedParams.filter_shared_room
+            ? JSON.parse(parsedParams.filter_shared_room)
             : null,
           category_id: parsedParams.search_category_id
             ? JSON.parse(parsedParams.search_category_id)
             : null,
-          type_of_place: parsedParams.search_type_of_place
-            ? JSON.parse(parsedParams.search_type_of_place)
+          type_of_place: parsedParams.filter_type_of_place
+            ? JSON.parse(parsedParams.filter_type_of_place)
             : null,
         });
 
