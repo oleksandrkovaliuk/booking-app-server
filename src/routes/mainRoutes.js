@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer")();
 
-const accessUser = require("../api/authorization/accesUser");
-const insertOAuthUser = require("../api/authorization/insertOAuthUser");
-const checkAuthType = require("../api/authorization/checkAuthType");
+const accessUser = require("../api/auth/accesUser");
+const insertOAuthUser = require("../api/auth/insertOAuthUser");
+const checkAuthType = require("../api/auth/checkAuthType");
 
 const getUserSearchRegionHistory = require("../api/user/getUserSearchRegionHistory");
 const updateUserSearchRegionHistory = require("../api/user/updateUserSearchRegionHistory");
@@ -42,6 +42,9 @@ const verificateToken = require("../middlewares/AuthenticateBarear");
 router.route("/auth/accessUser").post(accessUser);
 router.route("/auth/oauthUser").post(insertOAuthUser);
 router.route("/auth/checkAuthType").post(checkAuthType);
+// router
+//   .route("/auth/set/token/in/blacklist")
+//   .post(verificateToken, setTokenInBlackList);
 
 // USER
 router.route("/user/get/:user_email/:user_name").get(getUser);

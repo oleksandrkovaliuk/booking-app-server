@@ -14,10 +14,17 @@ const app = express();
 const PORT = process.env.PORT;
 const setupRoutes = () => {
   app.use(cors(defaultCorsSettings));
+
+  app.use(function (req, res, next) {
+    res.setHeader("X-Frame-Options", "DENY");
+    next();
+  });
+
   app.use("/api", mainRouters);
   app.use(function (req, res, next) {
     next(createError(404));
   });
+
   app.use(function (err, req, res, next) {
     res.locals.message = err.message;
     res.locals.error = req.app.get("env") === "development" ? err : {};
@@ -29,6 +36,7 @@ const setupRoutes = () => {
 const setupMiddlewares = () => {
   app.use(logger("dev"));
   app.use(cookieParser());
+
   app.use(express.static(path.join(__dirname, "public")));
 
   app.use(express.urlencoded({ extended: false })); // default true
