@@ -1,13 +1,10 @@
-const jwt = require("jsonwebtoken");
 const db = require("../../config/database");
 
 const updateUserSearchRegionHistory = async (req, res) => {
   const { id, requestedAt, region, formattedValue } = req.body;
 
-  const userToken = req.headers.authorization.split(" ")[1];
-
   try {
-    const user = jwt.verify(userToken, process.env.JSON_SECRET);
+    const user = req.user;
 
     const { rows: currentUserHistory } = await db.query(
       "SELECT location_search_history from users WHERE id = $1",
