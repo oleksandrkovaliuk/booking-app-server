@@ -14,6 +14,7 @@ const verificateToken = (req, res, next) => {
     if (!decoded) throw Error("Invalid token");
 
     req.user = decoded;
+    req.token = userToken;
     return next();
   } catch (error) {
     return res.status(403).json({ message: "Invalid or expired token" });

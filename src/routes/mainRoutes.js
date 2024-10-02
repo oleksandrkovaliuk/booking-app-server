@@ -5,16 +5,16 @@ const multer = require("multer")();
 const accessUser = require("../api/auth/accesUser");
 const insertOAuthUser = require("../api/auth/insertOAuthUser");
 const checkAuthType = require("../api/auth/checkAuthType");
+const updateTokensBlackList = require("../api/auth/updateTokensBlackList");
 
 const getUserSearchRegionHistory = require("../api/user/getUserSearchRegionHistory");
 const updateUserSearchRegionHistory = require("../api/user/updateUserSearchRegionHistory");
 
 const getListings = require("../api/listings/info/getListings");
-const getVerifiedListings = require("../api/listings/info/getVerifiedListings");
+const getSearchedListings = require("../api/listings/info/getSearchedListings");
 
 const getListingCategories = require("../api/listings/info/getListingsCategories");
 const getFullCategoriesList = require("../api/listings/info/getFullCategoriesList");
-const getAvailableCategories = require("../api/listings/info/getAvailableCategories");
 const getTypeOfPlace = require("../api/listings/info/getTypeOfPlace");
 const getUserListings = require("../api/listings/info/getUserListings");
 const getCurrentListing = require("../api/listings/info/getCurrentListing");
@@ -28,8 +28,6 @@ const uploadUserListingImages = require("../api/listings/images/uploadingImages"
 
 const setDisabledDates = require("../api/listings/calendar/setDisabledDates");
 
-const requestListingBySearchReq = require("../api/listings/searchFilters/requestListingBySearchReq");
-
 const updateListing = require("../api/listings/update/updateListing");
 
 // USER
@@ -42,9 +40,9 @@ const verificateToken = require("../middlewares/AuthenticateBarear");
 router.route("/auth/accessUser").post(accessUser);
 router.route("/auth/oauthUser").post(insertOAuthUser);
 router.route("/auth/checkAuthType").post(checkAuthType);
-// router
-//   .route("/auth/set/token/in/blacklist")
-//   .post(verificateToken, setTokenInBlackList);
+router
+  .route("/auth/update/tokens/blacklist")
+  .get(verificateToken, updateTokensBlackList);
 
 // USER
 router.route("/user/get/:user_email/:user_name").get(getUser);
@@ -57,23 +55,18 @@ router
 
 // LISTINGS
 router.route("/listings/listings").get(getListings);
-router.route("/listings/verified/by/params").get(getVerifiedListings);
+router.route("/listings/searched/by/params").get(getSearchedListings);
 
 router.route("/listings/typeofplace").get(getTypeOfPlace);
 
 router.route("/listings/categories").get(getListingCategories);
 router.route("/listings/categories/all").get(getFullCategoriesList);
-router
-  .route("/listings/request/available/categories")
-  .post(getAvailableCategories);
 
 router.route("/listings/get/users").get(verificateToken, getUserListings);
 router.route("/listings/get/current/:id").get(getCurrentListing);
 
 router.route("/listings/listing/create").post(verificateToken, createListing);
 router.route("/listings/listing/delete").post(verificateToken, deleteListing);
-
-router.route("/listings/request/search").post(requestListingBySearchReq);
 
 // UPDATE LISTING
 

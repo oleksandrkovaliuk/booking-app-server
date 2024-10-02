@@ -7,7 +7,7 @@ const checkAuthType = async (req, res) => {
   const { email } = req.body;
 
   try {
-    await db.query(checkIfUserExistsQuery, [email], (dbError, dbResponse) => {
+    db.query(checkIfUserExistsQuery, [email], (dbError, dbResponse) => {
       if (dbError)
         res.status(500).json({ error: "Couldnt authorize user. Try again" });
       if (dbResponse?.rows.length > 0) {
