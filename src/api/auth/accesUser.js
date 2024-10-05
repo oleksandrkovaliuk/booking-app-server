@@ -35,7 +35,24 @@ const accessUser = async (req, res) => {
         ]);
 
         if (!insertedUser.rows[0]) throw new Error("Something went wrong");
+
         const token = jwt.sign(insertedUser.rows[0], process.env.JSON_SECRET);
+
+        const blackListedToken = await db.query(
+          "SELECT * FROM tokens_black_list WHERE token = $1",
+          [token]
+        );
+
+        if (blackListedToken.rows.length > 0) {
+          const newToken = jwt.sign(
+            insertedUser.rows[0],
+            process.env.JSON_SECRET
+          );
+          return res.status(200).json({
+            status: "authorized",
+            user: { ...insertedUser.rows[0], jwt: newToken },
+          });
+        }
 
         return res.status(200).json({
           status: "authorized",

@@ -5,13 +5,11 @@ const { AUTH_ROLE } = require("../../enums/enum");
 const {
   checkIfUserExistsQuery,
   insertOAuthUserQuery,
-  updateJWTQuery,
 } = require("../../query/querys");
 
 const insertOAuthUser = async (req, res) => {
   const { email, user_name, user_lastname, img_url, provider } = req.body;
 
-  console.log(email, user_name, user_lastname, img_url, provider);
   try {
     if (email) {
       const existingUser = await db.query(checkIfUserExistsQuery, [email]);
@@ -19,6 +17,23 @@ const insertOAuthUser = async (req, res) => {
       if (existingUser.rows.length > 0) {
         if (existingUser.rows[0].auth_provider === provider) {
           const token = jwt.sign(existingUser.rows[0], process.env.JSON_SECRET);
+
+          const blackListedToken = await db.query(
+            "SELECT * FROM tokens_black_list WHERE token = $1",
+            [token]
+          );
+
+          if (blackListedToken.rows.length > 0) {
+            const newToken = jwt.sign(
+              existingUser.rows[0],
+              process.env.JSON_SECRET
+            );
+            return res.status(200).json({
+              status: "authorized",
+              user: { ...existingUser.rows[0], jwt: newToken },
+            });
+          }
+
           return res.status(200).json({
             status: "authorized",
             user: { ...existingUser.rows[0], jwt: token },
@@ -41,6 +56,22 @@ const insertOAuthUser = async (req, res) => {
 
         if (!insertUser.rows[0]) throw new Error("Something went wrong");
         const token = jwt.sign(insertUser.rows[0], process.env.JSON_SECRET);
+
+        const blackListedToken = await db.query(
+          "SELECT * FROM tokens_black_list WHERE token = $1",
+          [token]
+        );
+
+        if (blackListedToken.rows.length > 0) {
+          const newToken = jwt.sign(
+            insertUser.rows[0],
+            process.env.JSON_SECRET
+          );
+          return res.status(200).json({
+            status: "authorized",
+            user: { ...insertUser.rows[0], jwt: newToken },
+          });
+        }
 
         return res.status(200).json({
           status: "authorized",
