@@ -1,10 +1,11 @@
 const db = require("../../config/database");
 
 const getUser = async (req, res) => {
-  const { user_name, user_email } = req.params;
+  const { user_email, user_name } = req.params;
 
+  console.log(user_email);
   try {
-    if (!user_email && !user_name)
+    if (!user_email)
       return res.status(400).json({
         message: "Couldnt determine user name and email",
       });
