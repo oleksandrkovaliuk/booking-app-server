@@ -9,6 +9,10 @@ const getUserSearchRegionHistory = async (req, res) => {
       [user.id]
     );
 
+    if (!currentUserHistory[0].location_search_history) {
+      return res.status(404).json({ message: "No search history found" });
+    }
+
     return res
       .status(200)
       .json(
