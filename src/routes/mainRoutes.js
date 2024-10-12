@@ -27,6 +27,7 @@ const deleteListingImages = require("../api/listings/images/deleteImages");
 const uploadUserListingImages = require("../api/listings/images/uploadingImages");
 
 const setDisabledDates = require("../api/listings/calendar/setDisabledDates");
+const setRangeOfDisabledDates = require("../api/listings/calendar/setRangeOfDisabledDates");
 
 const updateListing = require("../api/listings/update/updateListing");
 
@@ -35,6 +36,10 @@ const getUser = require("../api/user/getUser");
 
 // MIDDLEWARE
 const verificateToken = require("../middlewares/AuthenticateBarear");
+
+// PAYMENT
+const getClientSecret = require("../api/payment/getClientSecret");
+const updateUserReservations = require("../api/user/updateUserReservations");
 
 // AUTH
 router.route("/auth/accessUser").post(accessUser);
@@ -45,13 +50,16 @@ router
   .get(verificateToken, updateTokensBlackList);
 
 // USER
-router.route("/user/get/:user_email/:user_name").get(getUser);
+router.route("/user/get/:user_email").get(getUser);
+router
+  .route("/user/get/search/region/history")
+  .get(verificateToken, getUserSearchRegionHistory);
 router
   .route("/user/update/search/region/history")
   .post(verificateToken, updateUserSearchRegionHistory);
 router
-  .route("/user/get/search/region/history")
-  .get(verificateToken, getUserSearchRegionHistory);
+  .route("/user/update/reservations")
+  .post(verificateToken, updateUserReservations);
 
 // LISTINGS
 router.route("/listings/listings").get(getListings);
@@ -87,5 +95,12 @@ router
 router
   .route("/listings/calendar/update")
   .post(verificateToken, setDisabledDates);
+
+router
+  .route("/listings/calendar/set/range/of/disabledDates")
+  .post(verificateToken, setRangeOfDisabledDates);
+// PAYMENT
+
+router.route("/payment/get/clientSecret").get(verificateToken, getClientSecret);
 
 module.exports = router;
