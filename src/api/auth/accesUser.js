@@ -34,6 +34,8 @@ const accessUser = async (req, res) => {
           AUTH_ROLE,
         ]);
 
+        console.log(insertedUser , "insertedUser");
+
         if (!insertedUser.rows[0]) throw new Error("Something went wrong");
 
         const token = jwt.sign(insertedUser.rows[0], process.env.JSON_SECRET);
@@ -63,6 +65,7 @@ const accessUser = async (req, res) => {
       throw Error("Failed with validate email or password");
     }
   } catch (error) {
+    console.log(error, "error");
     return res
       .status(500)
       .json({ error: error.message || "Couldnt authorize user. Try again" });
