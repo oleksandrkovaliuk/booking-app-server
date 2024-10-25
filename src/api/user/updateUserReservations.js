@@ -1,26 +1,27 @@
 const db = require("../../config/database");
 const getExistingUserReservationsQuery =
-  "SELECT * FROM users_reservations WHERE host_email = $1";
-
-const updateUserReservationQuery =
-  "UPDATE users_reservations SET reservation_requests = $2 WHERE host_email = $1";
+  "SELECT * FROM chats WHERE reciever = $1 AND sender = $2 AND listing_id = $3";
 
 const updateUserReservations = async (req, res) => {
   const {
-    guest_email,
     host_email,
     listing_id,
     guest_message,
     payment_intent,
     payment_intent_client_secret,
+    reservation_dates,
   } = req.body;
+
+  const user = req.user;
+
   try {
     if (
       !host_email ||
-      !guest_email ||
+      !user.email ||
       !listing_id ||
       !payment_intent ||
-      !payment_intent_client_secret
+      !payment_intent_client_secret ||
+      !reservation_dates
     ) {
       return res.status(400).json({
         message: "Invalid data provided. Please try again",
@@ -29,62 +30,50 @@ const updateUserReservations = async (req, res) => {
 
     const { rows } = await db.query(getExistingUserReservationsQuery, [
       host_email,
+      user.email,
+      listing_id,
     ]);
 
     if (!rows[0]) {
-      await db.query("INSERT INTO users_reservations VALUES ($1, $2)", [
-        host_email,
-        JSON.stringify([
-          {
-            listing_id,
-            guest_email,
-            guest_message,
-            payment_intent,
-            payment_intent_client_secret,
-          },
-        ]),
-      ]);
-
-      return res.status(200).json({
-        message: "Reservation requested successfully",
-      });
-    } else {
-      const existingUserReservations = rows[0].reservation_requests.filter(
-        (reservation) => {
-          return (
-            reservation.listing_id === listing_id &&
-            guest_email === reservation.guest_email
-          );
-        }
+      await db.query(
+        "INSERT INTO chats (sender , reciever , listing_id , chat_data , payment_intent , payment_intent_client_secret , reservation_dates) VALUES ($1 , $2 , $3 , $4 , $5 , $6 , $7)",
+        [
+          user.email,
+          host_email,
+          listing_id,
+          JSON.stringify([
+            {
+              to: host_email,
+              from: user.email,
+              seenByReceiver: false,
+              sent_at: new Date().toISOString(),
+              message: `You have a new reservation request from ${
+                user.email
+              }. ${guest_message ? `Message: ${guest_message}}` : ""}`,
+            },
+          ]),
+          payment_intent,
+          payment_intent_client_secret,
+          reservation_dates,
+        ]
       );
 
-      if (existingUserReservations.length > 0) {
-        return res.status(400).json({
-          message:
-            "Reservation already exists. Please check you inbox or contact us if you have any questions.",
-        });
-      }
-
-      await db.query(updateUserReservationQuery, [
-        host_email,
-        JSON.stringify([
-          ...rows[0].reservation_requests,
-          {
-            listing_id,
-            guest_email,
-            guest_message,
-            payment_intent,
-            payment_intent_client_secret,
-          },
-        ]),
-      ]);
+      const { rows: createdChat } = await db.query(
+        getExistingUserReservationsQuery,
+        [host_email, user.email, listing_id]
+      );
 
       return res.status(200).json({
         message: "Reservation requested successfully",
+        chatId: createdChat[0].id,
+      });
+    } else {
+      return res.status(400).json({
+        message:
+          "Reservation already exists. Please check you inbox or contact us if you have any questions.",
       });
     }
   } catch (error) {
-    console.log(error, "error");
     return res
       .status(500)
       .json({ message: "Internal Server Error. Please try again" });

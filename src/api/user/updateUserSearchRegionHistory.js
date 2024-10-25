@@ -1,11 +1,11 @@
 const db = require("../../config/database");
 
 const updateUserSearchRegionHistory = async (req, res) => {
+  const user = req.user;
+  
   const { id, requestedAt, region, formattedValue } = req.body;
 
   try {
-    const user = req.user;
-
     const { rows: currentUserHistory } = await db.query(
       "SELECT location_search_history from users WHERE id = $1",
       [user.id]
