@@ -11,9 +11,14 @@ const mainRouters = require("./routes/mainRoutes");
 const dbClientConnection = require("./config/database");
 const defaultCorsSettings = require("./barear/corsSettings");
 
+const handleReservationEvent = require("./socketEvents/handleReservationEvent");
+const handleNotificationUpdate = require("./socketEvents/handleNotificationUpdate");
+const handleNotificationReaded = require("./socketEvents/handleNotificationReaded");
+// const handleUpdateConversation = require("./socketEvents/handleUpdateConversation");
+const handleOnEnterConversetion = require("./socketEvents/handleJoinTheRoom");
+const handleJoinTheRoom = require("./socketEvents/handleJoinTheRoom");
+const handleUpdateConversation = require("./socketEvents/handleUpdateConversation");
 const markAsReadByReciever = require("./api/chats/markAsReadByReciever");
-const insertSpecificNotification = require("./api/user/notifications/insertSpecificNotification");
-const deleteSpecificNotifications = require("./api/user/notifications/deleteSpecificNotification");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -59,33 +64,47 @@ const setupDataBase = async () => await dbClientConnection.connect();
 
 const proccesSockets = () => {
   io.on("connection", (socket) => {
-    socket.on("newReservationReq", async (data) => {
-      await insertSpecificNotification({
-        type: data.type,
-        message: data.message,
-        user_email: data.user_email,
-        listing_id: data.listing_id,
-        redirect_href: data.redirect_href,
-      });
-      socket.emit(`${data.user_email} newReservation`);
+    socket.on("markMessagesAsReaded", async (data) => {
+      try {
+        const { succes } = await markAsReadByReciever({
+          viewer: data.viewer,
+          chatId: data.chatId,
+        });
+        if (succes) {
+          socket.emit("messagesReadedSuccesfully", {
+            chatId: data.chatId,
+            message: "Messages have been marked as readed",
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     });
+    handleReservationEvent(socket, io);
 
-    socket.on("enteredConversetion", async (data) => {
-      if (!data.reciever || !data.chatId || !data.type) return;
-      await markAsReadByReciever({
-        reciever: data.reciever,
-        chatId: data.chatId,
-      });
+    handleNotificationReaded(socket, io);
+    handleNotificationUpdate(socket, io);
 
-      await deleteSpecificNotifications(data.reciever);
+    handleJoinTheRoom(socket, io);
+    handleUpdateConversation(socket, io);
 
-      socket.emit(`${data.chatId} message_readed`);
-    });
-
-    socket.on("markNotificationAsRead", async (data) => {
-      if (!data.reciever || !data.type) return;
-      await deleteSpecificNotifications(data.reciever, data.type);
-    });
+    // socket.on("requestJoinRoom", (data) => {
+    //   socket.join(data.chatId);
+    //   console.log(`${socket.id} joined room: ${data.chatId}`);
+    //   socket.emit(`${data.chatId}JoinedSuccessfully`, {
+    //     chatId: data.chatId,
+    //     message: "You have joined the room",
+    //   });
+    // });
+    // socket.on("requestUpdateConversation", (data) => {
+    //   if (!data.chatId) return;
+    //   console.log("Current rooms:", socket.rooms);
+    //   console.log("RoomId", data.chatId);
+    //   io.to(data.chatId).emit("readyToBeUpdate", {
+    //     chatId: data.chatId,
+    //     message: "A user has entered the conversation",
+    //   });
+    // });
   });
 };
 

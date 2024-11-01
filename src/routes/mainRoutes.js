@@ -41,8 +41,10 @@ const verificateToken = require("../middlewares/AuthenticateBarear");
 
 // PAYMENT
 const getClientSecret = require("../api/payment/getClientSecret");
+const proccesPayment = require("../api/payment/proccesPayment");
 
 // CHATS
+const newChatMessage = require("../api/chats/newChatMessage");
 const getUsersChats = require("../api/chats/getUsersChats");
 const getCurrentChat = require("../api/chats/getCurrentChat");
 
@@ -113,9 +115,11 @@ router
 
 // PAYMENT
 router.route("/payment/get/clientSecret").get(verificateToken, getClientSecret);
+router.route("/payment/procces").post(verificateToken, proccesPayment);
 
 // CHATS
 router.route("/chats/get/users").get(verificateToken, getUsersChats);
 router.route("/chats/get/current").get(verificateToken, getCurrentChat);
+router.route("/chats/new/message").post(verificateToken, newChatMessage);
 
 module.exports = router;

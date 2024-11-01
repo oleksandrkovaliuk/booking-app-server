@@ -23,8 +23,12 @@ const getCurrentChat = async (req, res) => {
     if (!rows[0]) {
       return res.status(404).json({ message: "Chat not found" });
     } else {
+      const sortedChatData = rows[0].chat_data.splice(
+        rows[0].chat_data.length - 20,
+        rows[0].chat_data.length
+      );
       return res.status(200).json({
-        chat_data: rows[0].chat_data,
+        chat_data: sortedChatData,
         reciever: {
           email: chatUser[0].email,
           img_url: chatUser[0].img_url,
