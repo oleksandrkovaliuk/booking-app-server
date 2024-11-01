@@ -25,7 +25,7 @@ const getSearchedListingsResult = ({ listings, options, excludeCategory }) => {
       : null,
   });
 
-  if (!search_result.length) return listings;
+  if (!search_result.length) return [];
 
   if (
     parsedParams.search_category_id ||

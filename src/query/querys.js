@@ -10,6 +10,7 @@ const updateJWTQuery = "UPDATE users SET jwt = $1 WHERE id = $2 RETURNING *";
 // LISTINGS
 
 const getListingCategoriesQuery = "SELECT * FROM listings_categories";
+
 module.exports = {
   checkIfUserExistsQuery,
   insertOAuthUserQuery,
