@@ -1,7 +1,6 @@
 const db = require("../../config/database");
 const getExistingUserReservationsQuery =
   "SELECT * FROM chats WHERE reciever = $1 AND sender = $2 AND listing_id = $3";
-  "SELECT * FROM chats WHERE reciever = $1 AND sender = $2 AND listing_id = $3";
 
 const updateUserReservations = async (req, res) => {
   const {
@@ -11,9 +10,6 @@ const updateUserReservations = async (req, res) => {
     payment_intent,
     reservation_dates,
   } = req.body;
-
-  const user = req.user;
-
 
   const user = req.user;
 

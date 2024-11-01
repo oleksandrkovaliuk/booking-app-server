@@ -4,16 +4,10 @@ const path = require("path");
 const logger = require("morgan");
 const express = require("express");
 const { Server } = require("socket.io");
-const cors = require("cors");
-const path = require("path");
-const logger = require("morgan");
-const express = require("express");
-const { Server } = require("socket.io");
 const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 
 const mainRouters = require("./routes/mainRoutes");
-const dbClientConnection = require("./config/database");
 const dbClientConnection = require("./config/database");
 const defaultCorsSettings = require("./barear/corsSettings");
 
@@ -28,12 +22,6 @@ const markAsReadByReciever = require("./api/chats/markAsReadByReciever");
 
 const app = express();
 const PORT = process.env.PORT;
-const http_server = require("http").createServer(app);
-
-const io = new Server(http_server, {
-  cors: defaultCorsSettings,
-});
-
 const http_server = require("http").createServer(app);
 
 const io = new Server(http_server, {

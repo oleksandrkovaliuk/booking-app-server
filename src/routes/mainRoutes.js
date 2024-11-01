@@ -13,7 +13,6 @@ const getSearchedListings = require("../api/listings/info/getSearchedListings");
 const getTypeOfPlace = require("../api/listings/info/getTypeOfPlace");
 const getUserListings = require("../api/listings/info/getUserListings");
 const getListingCategories = require("../api/listings/info/getListingsCategories");
-const getListingCategories = require("../api/listings/info/getListingsCategories");
 const getCurrentListing = require("../api/listings/info/getCurrentListing");
 const getFullCategoriesList = require("../api/listings/info/getFullCategoriesList");
 
@@ -23,7 +22,6 @@ const deleteListing = require("../api/listings/manage/deleteListing");
 const deleteListingImages = require("../api/listings/images/deleteImages");
 const uploadUserListingImages = require("../api/listings/images/uploadingImages");
 const deleteIndividualListingImage = require("../api/listings/images/deleteIndividualImages");
-const deleteIndividualListingImage = require("../api/listings/images/deleteIndividualImages");
 
 const setDisabledDates = require("../api/listings/calendar/setDisabledDates");
 const setRangeOfDisabledDates = require("../api/listings/calendar/setRangeOfDisabledDates");
@@ -32,14 +30,9 @@ const updateListing = require("../api/listings/update/updateListing");
 
 // USER
 const getUser = require("../api/user/getUser");
-const getUserNotifications = require("../api/user/notifications/getUserNotifications");
 const updateUserReservations = require("../api/user/updateUserReservations");
 const getUserSearchRegionHistory = require("../api/user/getUserSearchRegionHistory");
-const updateUserSearchRegionHistory = require("../api/user/updateUserSearchRegionHistory");
-const updateAllUserNotifications = require("../api/user/notifications/updateAllUserNotifications");
 const getUserNotifications = require("../api/user/notifications/getUserNotifications");
-const updateUserReservations = require("../api/user/updateUserReservations");
-const getUserSearchRegionHistory = require("../api/user/getUserSearchRegionHistory");
 const updateUserSearchRegionHistory = require("../api/user/updateUserSearchRegionHistory");
 const updateAllUserNotifications = require("../api/user/notifications/updateAllUserNotifications");
 
@@ -74,12 +67,6 @@ router
 router
   .route("/user/update/reservations")
   .post(verificateToken, updateUserReservations);
-router
-  .route("/user/extract/notifications")
-  .get(verificateToken, getUserNotifications);
-router
-  .route("/user/update/all/notifications")
-  .patch(verificateToken, updateAllUserNotifications);
 router
   .route("/user/extract/notifications")
   .get(verificateToken, getUserNotifications);
