@@ -8,7 +8,6 @@ const updateUserReservations = async (req, res) => {
     listing_id,
     guest_message,
     payment_intent,
-    payment_intent_client_secret,
     reservation_dates,
   } = req.body;
 
@@ -18,9 +17,9 @@ const updateUserReservations = async (req, res) => {
     if (
       !host_email ||
       !user.email ||
+      !user.email ||
       !listing_id ||
       !payment_intent ||
-      !payment_intent_client_secret ||
       !reservation_dates
     ) {
       return res.status(400).json({
@@ -32,11 +31,13 @@ const updateUserReservations = async (req, res) => {
       host_email,
       user.email,
       listing_id,
+      user.email,
+      listing_id,
     ]);
 
     if (!rows[0]) {
       await db.query(
-        "INSERT INTO chats (sender , reciever , listing_id , chat_data , payment_intent , payment_intent_client_secret , reservation_dates) VALUES ($1 , $2 , $3 , $4 , $5 , $6 , $7)",
+        "INSERT INTO chats (sender , reciever , listing_id , chat_data , payment_intent  , reservation_dates) VALUES ($1 , $2 , $3 , $4 , $5 , $6 )",
         [
           user.email,
           host_email,
@@ -46,6 +47,7 @@ const updateUserReservations = async (req, res) => {
               to: host_email,
               from: user.email,
               seenByReceiver: false,
+              required_reservation: true,
               sent_at: new Date().toISOString(),
               message: `You have a new reservation request from ${
                 user.email
@@ -53,7 +55,6 @@ const updateUserReservations = async (req, res) => {
             },
           ]),
           payment_intent,
-          payment_intent_client_secret,
           reservation_dates,
         ]
       );

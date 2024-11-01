@@ -14,7 +14,6 @@ const getClientSecret = async (req, res) => {
       capture_method: "manual",
     });
 
-    console.log(paymentIntent, "paymentIntent");
     return res.status(200).json(paymentIntent.client_secret);
   } catch (error) {
     return res.status(500).json({ error: error.message });
