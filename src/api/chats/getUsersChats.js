@@ -2,6 +2,7 @@ const db = require("../../config/database");
 
 const getUsersChats = async (req, res) => {
   const user = req.user;
+
   try {
     if (!user.email) {
       return res.status(404).json({ message: "User not found" });
