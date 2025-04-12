@@ -44,12 +44,12 @@ const getUsersChats = async (req, res) => {
         ? {
             user_name: sender.user_name,
             img_url: sender.img_url,
-            email: sender.email,
+            user_email: sender.email,
           }
         : {
             user_name: reciever.user_name,
             img_url: reciever.img_url,
-            email: reciever.email,
+            user_email: reciever.email,
           };
 
       return {

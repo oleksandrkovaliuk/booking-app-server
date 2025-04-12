@@ -17,7 +17,6 @@ const updateUserReservations = async (req, res) => {
     if (
       !host_email ||
       !user.email ||
-      !user.email ||
       !listing_id ||
       !payment_intent ||
       !reservation_dates

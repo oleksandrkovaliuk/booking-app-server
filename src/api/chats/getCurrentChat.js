@@ -34,7 +34,7 @@ const getCurrentChat = async (req, res) => {
     return res.status(200).json({
       chat_data: sortedChatData,
       reciever: {
-        email: rows[0].email,
+        user_email: rows[0].email,
         img_url: rows[0].img_url,
         user_name: rows[0].user_name,
       },
