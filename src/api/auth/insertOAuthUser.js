@@ -8,11 +8,11 @@ const {
 } = require("../../query/querys");
 
 const insertOAuthUser = async (req, res) => {
-  const { email, user_name, user_lastname, img_url, provider } = req.body;
+  const { user_email, user_name, user_lastname, img_url, provider } = req.body;
 
   try {
-    if (email) {
-      const existingUser = await db.query(checkIfUserExistsQuery, [email]);
+    if (user_email) {
+      const existingUser = await db.query(checkIfUserExistsQuery, [user_email]);
 
       if (existingUser.rows.length > 0) {
         if (existingUser.rows[0].auth_provider === provider) {
@@ -46,7 +46,7 @@ const insertOAuthUser = async (req, res) => {
         }
       } else {
         const insertUser = await db.query(insertOAuthUserQuery, [
-          email,
+          user_email,
           user_name,
           user_lastname,
           img_url,
