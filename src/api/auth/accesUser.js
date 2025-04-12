@@ -7,11 +7,11 @@ const {
 } = require("../../query/querys");
 
 const accessUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { user_email, password } = req.body;
 
   try {
-    if (email && password) {
-      const existingUser = await db.query(checkIfUserExistsQuery, [email]);
+    if (user_email && password) {
+      const existingUser = await db.query(checkIfUserExistsQuery, [user_email]);
 
       if (existingUser.rows.length > 0) {
         if (atob(existingUser.rows[0].password) === atob(password)) {
@@ -28,13 +28,13 @@ const accessUser = async (req, res) => {
         }
       } else {
         const insertedUser = await db.query(insertUserQuery, [
-          email,
+          user_email,
           password,
           AUTH_PROVIDER_CREDENTIALS,
           AUTH_ROLE,
         ]);
 
-        console.log(insertedUser , "insertedUser");
+        console.log(insertedUser, "insertedUser");
 
         if (!insertedUser.rows[0]) throw new Error("Something went wrong");
 

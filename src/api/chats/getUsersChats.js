@@ -38,6 +38,7 @@ const getUsersChats = async (req, res) => {
       const reciever = userMap[chat.reciever];
       const listing = listingsMap[chat.listing_id];
 
+      console.log(listing);
       const isReciever = chat.reciever === user.email;
       const chatPartner = isReciever
         ? {
